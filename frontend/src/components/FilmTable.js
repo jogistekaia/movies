@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableHead, TableRow, Button } from '@mui/material';
+import { Table, TableBody, TableCell, TableHead, TableRow, Button, Switch } from '@mui/material';
 
 const FilmTable = ({ films, onDelete, onToggleStatus }) => {
     return (
@@ -11,6 +11,7 @@ const FilmTable = ({ films, onDelete, onToggleStatus }) => {
                     <TableCell>Categories</TableCell>
                     <TableCell>Rating</TableCell>
                     <TableCell>Year</TableCell>
+                    <TableCell>Active</TableCell>
                     <TableCell>Actions</TableCell>
                 </TableRow>
             </TableHead>
@@ -22,6 +23,13 @@ const FilmTable = ({ films, onDelete, onToggleStatus }) => {
                         <TableCell>{film.categories.join(', ')}</TableCell>
                         <TableCell>{film.rating}</TableCell>
                         <TableCell>{film.year}</TableCell>
+                        <TableCell>
+                            <Switch
+                                checked={film.active}
+                                onChange={() => onToggleStatus(film.eidr, !film.active)}
+                                color="primary"
+                            />
+                        </TableCell>
                         <TableCell>
                             <Button onClick={() => onDelete(film.eidr)}>Delete</Button>
                         </TableCell>

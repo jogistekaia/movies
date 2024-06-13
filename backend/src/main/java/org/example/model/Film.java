@@ -8,13 +8,15 @@ public class Film {
     private Set<String> categories;
     private double rating;
     private int year;
+    private boolean active;
 
-    public Film(String name, String eidr, Set<String> categories, double rating, int year) {
+    public Film(String name, String eidr, Set<String> categories, double rating, int year, boolean active) {
         this.name = name;
         this.eidr = eidr;
         this.categories = categories;
         this.rating = rating;
         this.year = year;
+        this.active = active;
     }
 
     public String getName() {
@@ -55,5 +57,13 @@ public class Film {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

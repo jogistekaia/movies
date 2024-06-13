@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getFilms, addFilm, deleteFilm } from '../services/filmService';
+import { getFilms, addFilm, updateFilmStatus, deleteFilm } from '../services/filmService';
 import FilmTable from './FilmTable';
 import FilmForm from './FilmForm';
 
@@ -28,6 +28,11 @@ const FilmList = () => {
         }
     };
 
+  const handleToggleStatus = async (eidr, active) => {
+        await updateFilmStatus(eidr, active);
+        fetchFilms();
+    };
+
     const handleDelete = async (eidr) => {
         try {
             await deleteFilm(eidr);
@@ -40,7 +45,7 @@ const FilmList = () => {
     return (
         <div>
             <FilmForm onAddFilm={handleAddFilm} />
-            <FilmTable films={films} onDelete={handleDelete} />
+            <FilmTable films={films} onToggleStatus={handleToggleStatus} onDelete={handleDelete} />
         </div>
     );
 };

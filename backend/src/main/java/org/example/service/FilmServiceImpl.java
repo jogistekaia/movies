@@ -29,6 +29,14 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
+    public void updateFilmStatus(String eidr, boolean active) {
+        films.stream()
+                .filter(film -> film.getEidr().equals(eidr))
+                .findFirst()
+                .ifPresent(film -> film.setActive(active));
+    }
+
+    @Override
     public void deleteFilm(String eidr) {
         films.removeIf(film -> film.getEidr().equals(eidr));
     }

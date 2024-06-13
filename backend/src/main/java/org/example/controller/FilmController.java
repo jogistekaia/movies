@@ -33,6 +33,11 @@ public class FilmController {
         filmService.addFilm(film);
     }
 
+    @PutMapping("/{eidr}")
+    public void updateFilmStatus(@PathVariable String eidr, @RequestParam boolean active) {
+        filmService.updateFilmStatus(eidr, active);
+    }
+
     @DeleteMapping("/{eidr}")
     public void deleteFilm(@PathVariable String eidr) {
         filmService.deleteFilm(eidr);

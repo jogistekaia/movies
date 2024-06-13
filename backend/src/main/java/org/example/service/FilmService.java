@@ -8,5 +8,6 @@ public interface FilmService {
     List<Film> getAllFilms();
     Film getFilmByEidr(String eidr);
     void addFilm(Film film);
+    void updateFilmStatus(String eidr, boolean active);
     void deleteFilm(String eidr);
 }
