@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FilmServiceImpl implements FilmService {
@@ -11,8 +12,13 @@ public class FilmServiceImpl implements FilmService {
     private List<Film> films = new ArrayList<>();
 
     @Override
-    public List<Film> getAllFilms() {
-        return films;
+    public List<Film> getAllFilms(String category) {
+        if (category == null || category.isEmpty()) {
+            return films;
+        }
+        return films.stream()
+                .filter(film -> film.getCategories().contains(category))
+                .collect(Collectors.toList());
     }
 
     @Override

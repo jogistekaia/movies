@@ -19,8 +19,8 @@ public class FilmController {
     }
 
     @GetMapping
-    public List<Film> getAllFilms() {
-        return filmService.getAllFilms();
+    public List<Film> getAllFilms(@RequestParam(required = false) String category) {
+        return filmService.getAllFilms(category);
     }
 
     @GetMapping("/{eidr}")

@@ -1,15 +1,31 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableHead, TableRow, Button, Switch } from '@mui/material';
+import { Table, TableBody, TableCell, TableHead, TableRow, Button, Switch, TableSortLabel} from '@mui/material';
 
-const FilmTable = ({ films, onDelete, onToggleStatus }) => {
+const FilmTable = ({ films, onDelete, onToggleStatus,  onSort, sortConfig }) => {
     return (
         <Table>
             <TableHead>
                 <TableRow>
-                    <TableCell>Name</TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortConfig.key === 'name'}
+                        direction={sortConfig.direction}
+                        onClick={() => onSort('name')}
+                      >
+                        Name
+                      </TableSortLabel>
+                    </TableCell>
                     <TableCell>EIDR</TableCell>
                     <TableCell>Categories</TableCell>
-                    <TableCell>Rating</TableCell>
+                    <TableCell>
+                        <TableSortLabel
+                            active={sortConfig.key === 'rating'}
+                            direction={sortConfig.direction}
+                            onClick={() => onSort('rating')}
+                        >
+                            Rating
+                        </TableSortLabel>
+                    </TableCell>
                     <TableCell>Year</TableCell>
                     <TableCell>Active</TableCell>
                     <TableCell>Actions</TableCell>
