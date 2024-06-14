@@ -3,6 +3,8 @@ package org.example.controller;
 import org.example.model.Film;
 import org.example.service.FilmService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,8 +31,13 @@ public class FilmController {
     }
 
     @PostMapping
-    public void addFilm(@RequestBody Film film) {
-        filmService.addFilm(film);
+    public ResponseEntity<String> addFilm(@RequestBody Film film) {
+        try {
+            filmService.addFilm(film);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("EIDR already exists");
+        }
     }
 
     @PutMapping("/{eidr}")

@@ -10,4 +10,5 @@ public interface FilmService {
     void addFilm(Film film);
     void updateFilmStatus(String eidr, boolean active);
     void deleteFilm(String eidr);
+    boolean eidrExists(String eidr);
 }

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Checkbox, FormControlLabel, FormGroup, FormControl, FormLabel, RadioGroup, Radio } from '@mui/material';
 
-const FilmForm = ({ onAddFilm }) => {
+const FilmForm = ({ onAddFilm, error }) => {
     const [film, setFilm] = useState({
         name: '',
         eidr: '',
@@ -12,6 +12,12 @@ const FilmForm = ({ onAddFilm }) => {
     });
 
     const [validationErrors, setValidationErrors] = useState({});
+
+    useEffect(() => {
+        if (error) {
+            setValidationErrors(prev => ({ ...prev, eidr: error }));
+        }
+    }, [error]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -28,7 +34,11 @@ const FilmForm = ({ onAddFilm }) => {
     };
 
     const handleActivityChange = (e) => {
-    setFilm(prev => ({...prev, active: e.target.value === 'active'}));
+        setFilm(prev => ({ ...prev, active: e.target.value === 'active' }));
+    };
+
+    const resetForm = () => {
+        setFilm({ name: '', eidr: '', categories: [], rating: '', year: '', active: true });
     };
 
     const handleSubmit = (e) => {
@@ -64,15 +74,12 @@ const FilmForm = ({ onAddFilm }) => {
         setValidationErrors({});
 
         // Submit film data
-        console.log("Film data: " + JSON.stringify(film))
-        onAddFilm(film);
-
-        // Clear form fields after submission
-        setFilm({ name: '', eidr: '', categories: [], rating: '', year: '', active: true });
+        console.log("Film data: " + JSON.stringify(film));
+        onAddFilm(film, resetForm);
     };
 
     const categories = ['Comedy', 'Drama', 'Action', 'Crime', 'Horror'];
-// TODO: check if EIDR is unique
+
     return (
         <form onSubmit={handleSubmit}>
             <TextField
@@ -106,8 +113,8 @@ const FilmForm = ({ onAddFilm }) => {
                         label={category}
                     />
                 ))}
-                {validationErrors && validationErrors.categories && (
-                    <div className="error">{validationErrors.categories}</div>
+                {validationErrors.categories && (
+                    <div style={{ color: 'red' }}>{validationErrors.categories}</div>
                 )}
             </FormGroup>
             <TextField
@@ -133,12 +140,12 @@ const FilmForm = ({ onAddFilm }) => {
                 inputProps={{ maxLength: 4 }}
             />
             <FormControl component="fieldset">
-                            <FormLabel component="legend">Status</FormLabel>
-                            <RadioGroup row name="activity" value={film.active ? 'active' : 'inactive'} onChange={handleActivityChange}>
-                                <FormControlLabel value="active" control={<Radio />} label="Active" />
-                                <FormControlLabel value="inactive" control={<Radio />} label="Inactive" />
-                            </RadioGroup>
-                        </FormControl>
+                <FormLabel component="legend">Status</FormLabel>
+                <RadioGroup row name="activity" value={film.active ? 'active' : 'inactive'} onChange={handleActivityChange}>
+                    <FormControlLabel value="active" control={<Radio />} label="Active" />
+                    <FormControlLabel value="inactive" control={<Radio />} label="Inactive" />
+                </RadioGroup>
+            </FormControl>
             <Button type="submit">Add Film</Button>
         </form>
     );

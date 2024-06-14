@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { getFilms, addFilm, updateFilmStatus, deleteFilm } from '../services/filmService';
 import FilmTable from './FilmTable';
 import FilmForm from './FilmForm';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, Button } from '@mui/material';
 
 const FilmList = () => {
     const [films, setFilms] = useState([]);
     const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
     const [categoryFilter, setCategoryFilter] = useState('');
+    const [error, setError] = useState('');
+    const [selectedFilms, setSelectedFilms] = useState([]);
 
     useEffect(() => {
         fetchFilms();
@@ -22,12 +24,18 @@ const FilmList = () => {
         }
     };
 
-    const handleAddFilm = async (film) => {
+    const handleAddFilm = async (film, resetForm) => {
         try {
             await addFilm(film);
             fetchFilms();
+            setError(''); // Clear any previous error
+            resetForm(); // Reset form after successful addition
         } catch (error) {
-            console.error('Error adding film:', error);
+            if (error.response && error.response.status === 409) {
+                setError('EIDR already exists');
+            } else {
+                console.error('Error adding film:', error);
+            }
         }
     };
 
@@ -36,13 +44,24 @@ const FilmList = () => {
         fetchFilms();
     };
 
-    const handleDelete = async (eidr) => {
+    const handleDelete = async () => {
         try {
-            await deleteFilm(eidr);
+            await Promise.all(selectedFilms.map((eidr) => deleteFilm(eidr)));
             fetchFilms();
+            setSelectedFilms([]); // Clear selected films after deletion
         } catch (error) {
-            console.error('Error deleting film:', error);
+            console.error('Error deleting films:', error);
         }
+    };
+
+    const handleDeleteSelected = async () => {
+        try {
+                  await Promise.all(selectedFilms.map((eidr) => deleteFilm(eidr)));
+                  fetchFilms();
+                  setSelectedFilms([]); // Clear selected films after deletion
+              } catch (error) {
+                  console.error('Error deleting films:', error);
+              }
     };
 
     const handleSort = (key) => {
@@ -50,27 +69,19 @@ const FilmList = () => {
         setSortConfig({ key, direction });
     };
 
-    const sortedFilms = [...films].sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
-            return sortConfig.direction === 'asc' ? -1 : 1;
-        }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
-            return sortConfig.direction === 'asc' ? 1 : -1;
-        }
-        return 0;
-    });
-
     const handleCategoryFilterChange = (event) => {
         setCategoryFilter(event.target.value);
     };
 
     return (
         <div>
-            <FilmForm onAddFilm={handleAddFilm} />
+            <FilmForm onAddFilm={handleAddFilm} error={error} />
             <FormControl fullWidth>
                 <InputLabel>Category</InputLabel>
                 <Select value={categoryFilter} onChange={handleCategoryFilterChange}>
-                    <MenuItem value=""><em>All</em></MenuItem>
+                    <MenuItem value="">
+                        <em>All</em>
+                    </MenuItem>
                     <MenuItem value="Comedy">Comedy</MenuItem>
                     <MenuItem value="Drama">Drama</MenuItem>
                     <MenuItem value="Action">Action</MenuItem>
@@ -79,11 +90,14 @@ const FilmList = () => {
                 </Select>
             </FormControl>
             <FilmTable
-                films={sortedFilms}
+                films={films}
                 onToggleStatus={handleToggleStatus}
                 onDelete={handleDelete}
                 onSort={handleSort}
                 sortConfig={sortConfig}
+                selectedFilms={selectedFilms}
+                setSelectedFilms={setSelectedFilms}
+                onDeleteSelected={handleDeleteSelected}
             />
         </div>
     );

@@ -31,6 +31,9 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void addFilm(Film film) {
+        if (eidrExists(film.getEidr())) {
+            throw new IllegalArgumentException("EIDR already exists");
+        }
         films.add(film);
     }
 
@@ -45,5 +48,10 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void deleteFilm(String eidr) {
         films.removeIf(film -> film.getEidr().equals(eidr));
+    }
+
+    @Override
+    public boolean eidrExists(String eidr) {
+        return films.stream().anyMatch(film -> film.getEidr().equals(eidr));
     }
 }
