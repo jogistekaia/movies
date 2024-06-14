@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { TextField, Button, Checkbox, FormControlLabel, FormGroup, FormControl, FormLabel, RadioGroup, Radio } from '@mui/material';
+import '../styles.css'; // Import your custom CSS file
 
 const FilmForm = ({ onAddFilm, error }) => {
-    const [film, setFilm] = useState({
+    const [film, setFilm] = React.useState({
         name: '',
         eidr: '',
         categories: [],
@@ -11,9 +12,9 @@ const FilmForm = ({ onAddFilm, error }) => {
         active: true
     });
 
-    const [validationErrors, setValidationErrors] = useState({});
+    const [validationErrors, setValidationErrors] = React.useState({});
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (error) {
             setValidationErrors(prev => ({ ...prev, eidr: error }));
         }
@@ -85,7 +86,7 @@ const FilmForm = ({ onAddFilm, error }) => {
     const categories = ['Comedy', 'Drama', 'Action', 'Crime', 'Horror'];
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="film-form">
             <TextField
                 label="Name"
                 name="name"
@@ -94,6 +95,7 @@ const FilmForm = ({ onAddFilm, error }) => {
                 error={!!validationErrors.name}
                 helperText={validationErrors.name}
                 required
+                className="form-field"
             />
             <TextField
                 label="EIDR"
@@ -103,7 +105,9 @@ const FilmForm = ({ onAddFilm, error }) => {
                 error={!!validationErrors.eidr}
                 helperText={validationErrors.eidr}
                 required
+                className="form-field"
             />
+            <div className="category-checkboxes">
             <FormGroup>
                 {categories.map(category => (
                     <FormControlLabel
@@ -115,12 +119,14 @@ const FilmForm = ({ onAddFilm, error }) => {
                             />
                         }
                         label={category}
+                        className="category-label"
                     />
                 ))}
                 {validationErrors.categories && (
-                    <div style={{ color: 'red' }}>{validationErrors.categories}</div>
+                    <div className="error-message">{validationErrors.categories}</div>
                 )}
             </FormGroup>
+            </div>
             <TextField
                 label="Rating"
                 name="rating"
@@ -131,6 +137,7 @@ const FilmForm = ({ onAddFilm, error }) => {
                 required
                 type="number"
                 inputProps={{ min: 0, max: 10 }}
+                className="form-field"
             />
             <TextField
                 label="Year"
@@ -142,15 +149,16 @@ const FilmForm = ({ onAddFilm, error }) => {
                 required
                 type="number"
                 inputProps={{ maxLength: 4 }}
+                className="form-field"
             />
-            <FormControl component="fieldset">
+            <FormControl component="fieldset" className="radio">
                 <FormLabel component="legend">Status</FormLabel>
-                <RadioGroup row name="activity" value={film.active ? 'active' : 'inactive'} onChange={handleActivityChange}>
+                <RadioGroup row  name="activity" value={film.active ? 'active' : 'inactive'} onChange={handleActivityChange}>
                     <FormControlLabel value="active" control={<Radio />} label="Active" />
                     <FormControlLabel value="inactive" control={<Radio />} label="Inactive" />
                 </RadioGroup>
             </FormControl>
-            <Button type="submit">Add Film</Button>
+            <Button type="submit" className="nav-link">Add Film</Button>
         </form>
     );
 };

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import FilmForm from './FilmForm';
 import { addFilm } from '../services/filmService';
+import '../styles.css';
 
 const AddFilmTab = () => {
     const [error, setError] = useState('');
@@ -21,7 +22,6 @@ const AddFilmTab = () => {
 
     return (
         <div>
-            <h2>Add Film</h2>
             <FilmForm onAddFilm={handleAddFilm} error={error} />
         </div>
     );

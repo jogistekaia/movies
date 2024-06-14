@@ -35,10 +35,12 @@ const FilmTable = ({ films, onDelete,  onToggleStatus, onSort, sortConfig, selec
     const emptyRows = pageSize - Math.min(pageSize, sortedFilms.length - currentPage * pageSize);
 
     return (
-        <>
-            <Button onClick={onDeleteSelected} disabled={selectedFilms.length === 0}>
+        <div>
+            <div className="delete-button-container">
+            <Button className="nav-link" onClick={onDeleteSelected} disabled={selectedFilms.length === 0}>
                 Delete Selected
             </Button>
+            </div>
             <Table>
                 <TableHead>
                     <TableRow>
@@ -112,7 +114,7 @@ const FilmTable = ({ films, onDelete,  onToggleStatus, onSort, sortConfig, selec
                    setCurrentPage(0);
                 }}
             />
-        </>
+        </div>
     );
 };
 

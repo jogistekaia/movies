@@ -2,22 +2,16 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import FilmList from './components/FilmList';
 import AddFilmTab from './components/AddFilmTab';
-import './App.css';
+import './styles.css';
 
 function App() {
     return (
         <Router>
             <div className="App">
                 <h1>Film Shelf</h1>
-                <nav>
-                    <ul>
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link to="/add">Add Film</Link>
-                        </li>
-                    </ul>
+                <nav className="navbar">
+                    <Link to="/" className="nav-link">Home</Link>
+                    <Link to="/add" className="nav-link">Add Film</Link>
                 </nav>
                 <Routes>
                     <Route path="/" element={<FilmList />} />

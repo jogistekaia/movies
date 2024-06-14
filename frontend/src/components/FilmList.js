@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getFilms, updateFilmStatus, deleteFilm } from '../services/filmService';
 import FilmTable from './FilmTable';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import '../styles.css';
 
 const FilmList = () => {
     const [films, setFilms] = useState([]);
@@ -10,6 +11,7 @@ const FilmList = () => {
     const [selectedFilms, setSelectedFilms] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [pageSize, setPageSize] = useState(5); // Number of rows per page
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         fetchFilms();
@@ -58,9 +60,19 @@ const FilmList = () => {
         setCategoryFilter(event.target.value);
     };
 
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
+
+    const filteredFilms = films.filter((film) =>
+        film.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        film.eidr.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
-        <div>
-            <FormControl fullWidth>
+        <div className="container">
+            <div className="search">
+            <FormControl>
                 <InputLabel>Category</InputLabel>
                 <Select value={categoryFilter} onChange={handleCategoryFilterChange}>
                     <MenuItem value="">
@@ -73,8 +85,15 @@ const FilmList = () => {
                     <MenuItem value="Horror">Horror</MenuItem>
                 </Select>
             </FormControl>
+            <TextField
+                label="Search"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                margin="normal"
+            />
+            </div>
             <FilmTable
-                films={films}
+                films={filteredFilms}
                 onToggleStatus={handleToggleStatus}
                 onDelete={handleDelete}
                 onSort={handleSort}
