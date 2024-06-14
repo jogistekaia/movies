@@ -1,41 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { getFilms, addFilm, updateFilmStatus, deleteFilm } from '../services/filmService';
+import { getFilms, updateFilmStatus, deleteFilm } from '../services/filmService';
 import FilmTable from './FilmTable';
-import FilmForm from './FilmForm';
-import { FormControl, InputLabel, MenuItem, Select, Button } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 const FilmList = () => {
     const [films, setFilms] = useState([]);
     const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
     const [categoryFilter, setCategoryFilter] = useState('');
-    const [error, setError] = useState('');
     const [selectedFilms, setSelectedFilms] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pageSize, setPageSize] = useState(5); // Number of rows per page
 
     useEffect(() => {
         fetchFilms();
-    }, [categoryFilter]);  // Fetch films again when the category filter changes
+    }, [categoryFilter, currentPage, pageSize]); // Refetch films when category filter, page or page size changes
 
     const fetchFilms = async () => {
         try {
-            const response = await getFilms(categoryFilter);
+            const response = await getFilms(categoryFilter, currentPage, pageSize);
             setFilms(response.data);
         } catch (error) {
             console.error('Error fetching films:', error);
-        }
-    };
-
-    const handleAddFilm = async (film, resetForm) => {
-        try {
-            await addFilm(film);
-            fetchFilms();
-            setError(''); // Clear any previous error
-            resetForm(); // Reset form after successful addition
-        } catch (error) {
-            if (error.response && error.response.status === 409) {
-                setError('EIDR already exists');
-            } else {
-                console.error('Error adding film:', error);
-            }
         }
     };
 
@@ -56,12 +41,12 @@ const FilmList = () => {
 
     const handleDeleteSelected = async () => {
         try {
-                  await Promise.all(selectedFilms.map((eidr) => deleteFilm(eidr)));
-                  fetchFilms();
-                  setSelectedFilms([]); // Clear selected films after deletion
-              } catch (error) {
-                  console.error('Error deleting films:', error);
-              }
+            await Promise.all(selectedFilms.map((eidr) => deleteFilm(eidr)));
+            fetchFilms();
+            setSelectedFilms([]); // Clear selected films after deletion
+        } catch (error) {
+            console.error('Error deleting films:', error);
+        }
     };
 
     const handleSort = (key) => {
@@ -75,7 +60,6 @@ const FilmList = () => {
 
     return (
         <div>
-            <FilmForm onAddFilm={handleAddFilm} error={error} />
             <FormControl fullWidth>
                 <InputLabel>Category</InputLabel>
                 <Select value={categoryFilter} onChange={handleCategoryFilterChange}>
@@ -98,6 +82,10 @@ const FilmList = () => {
                 selectedFilms={selectedFilms}
                 setSelectedFilms={setSelectedFilms}
                 onDeleteSelected={handleDeleteSelected}
+                currentPage={currentPage}
+                pageSize={pageSize}
+                setCurrentPage={setCurrentPage}
+                setPageSize={setPageSize}
             />
         </div>
     );

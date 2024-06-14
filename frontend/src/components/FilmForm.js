@@ -41,7 +41,7 @@ const FilmForm = ({ onAddFilm, error }) => {
         setFilm({ name: '', eidr: '', categories: [], rating: '', year: '', active: true });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Validate inputs
@@ -74,8 +74,12 @@ const FilmForm = ({ onAddFilm, error }) => {
         setValidationErrors({});
 
         // Submit film data
-        console.log("Film data: " + JSON.stringify(film));
-        onAddFilm(film, resetForm);
+       console.log("Film data: " + JSON.stringify(film));
+        try {
+            await onAddFilm(film, resetForm);
+        } catch (error) {
+            console.error('Error adding film:', error);
+        }
     };
 
     const categories = ['Comedy', 'Drama', 'Action', 'Crime', 'Horror'];

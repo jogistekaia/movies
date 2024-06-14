@@ -1,6 +1,6 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableHead, TableRow, Button, Switch, TableSortLabel, Checkbox, } from '@mui/material';
-const FilmTable = ({ films, onDelete,  onToggleStatus, onSort, sortConfig, selectedFilms, setSelectedFilms,  onDeleteSelected }) => {
+import { Table, TableBody, TableCell, TableHead, TableRow, Button, Switch, TableSortLabel, Checkbox, TablePagination} from '@mui/material';
+const FilmTable = ({ films, onDelete,  onToggleStatus, onSort, sortConfig, selectedFilms, setSelectedFilms,  onDeleteSelected, currentPage, pageSize, setCurrentPage, setPageSize }) => {
     const getComparator = (key, direction) => {
         return (a, b) => {
             if (direction === 'asc') {
@@ -31,6 +31,8 @@ const FilmTable = ({ films, onDelete,  onToggleStatus, onSort, sortConfig, selec
 
         setSelectedFilms(newSelected);
     };
+
+    const emptyRows = pageSize - Math.min(pageSize, sortedFilms.length - currentPage * pageSize);
 
     return (
         <>
@@ -66,7 +68,10 @@ const FilmTable = ({ films, onDelete,  onToggleStatus, onSort, sortConfig, selec
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {sortedFilms.map((film) => (
+                    {(pageSize > 0
+                        ? sortedFilms.slice(currentPage * pageSize, currentPage * pageSize + pageSize)
+                        : sortedFilms
+                    ).map((film) => (
                         <TableRow key={film.eidr}>
                             <TableCell>{film.name}</TableCell>
                             <TableCell>{film.eidr}</TableCell>
@@ -88,8 +93,25 @@ const FilmTable = ({ films, onDelete,  onToggleStatus, onSort, sortConfig, selec
                             </TableCell>
                         </TableRow>
                     ))}
+                    {emptyRows > 0 && (
+                        <TableRow style={{ height: 53 * emptyRows }}>
+                            <TableCell colSpan={7} />
+                        </TableRow>
+                    )}
                 </TableBody>
             </Table>
+           <TablePagination
+                rowsPerPageOptions={[5]}
+                component="div"
+                count={sortedFilms.length}
+                rowsPerPage={pageSize}
+                page={currentPage}
+                onPageChange={(event, newPage) => setCurrentPage(newPage)}
+                onRowsPerPageChange={(event) => {
+                   setPageSize(parseInt(event.target.value, 10));
+                   setCurrentPage(0);
+                }}
+            />
         </>
     );
 };
