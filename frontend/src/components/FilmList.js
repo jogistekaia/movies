@@ -87,6 +87,7 @@ const FilmList = () => {
             </FormControl>
             <TextField
                 label="Search"
+                id="search"
                 value={searchQuery}
                 onChange={handleSearchChange}
                 margin="normal"

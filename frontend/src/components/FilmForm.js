@@ -158,7 +158,7 @@ const FilmForm = ({ onAddFilm, error }) => {
                     <FormControlLabel value="inactive" control={<Radio />} label="Inactive" />
                 </RadioGroup>
             </FormControl>
-            <Button type="submit" className="nav-link">Add Film</Button>
+            <Button type="submit" id="submitFilm" className="nav-link">Add Film</Button>
         </form>
     );
 };
